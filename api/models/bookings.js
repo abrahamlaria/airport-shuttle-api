@@ -1,17 +1,19 @@
 const mongoose = require('mongoose');
 
-const bookingsSchema = mongoose.Schema({
+const bookingSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     trip_details: {
         pickup_location: {type: String, required: true},
         dropoff_location: {type: String, required: true},
         pickup_date: {type: String, required: true},
         pickup_time: {type: String, required: true},
+        flight_number: {type: String, required: true},
         passengers_count: {type: Number, required: true},
         suitcases_count: {type: Number, required: true},
         roundtrip: {type: Boolean},
         rt_pickup_date: {type: String},
-        rt_pickup_time: {type: String}
+        rt_pickup_time: {type: String},       
+        rt_flight_number: {type: String}
     },
     vehicle: {
         selected_vehicle: {type: String, required: true},
@@ -32,11 +34,9 @@ const bookingsSchema = mongoose.Schema({
             match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
         },
         phone_number: {type: String, required: true},
-        country: {type: String, required: true},
-        flight_number: {type: String, required: true},
-        rt_flight_number: {type: String},
-        comments: {type: String},
-    },
+        country: {type: String, required: true}      
+    },   
+    comments: {type: String},
     send_communications: {type: Boolean, required: true},
     agree_to_terms: {type: Boolean, required: true},
     payment_details: {
@@ -48,4 +48,4 @@ const bookingsSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Bookings', bookingsSchema);
+module.exports = mongoose.model('Booking', bookingSchema);
