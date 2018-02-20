@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 //Get all products
 exports.bookins_get_all = (req, res, next) => {
     Booking.find()
-        .select('_id trip_details vehicle options contact_info  comments payment_details')
+        .select('_id trip_details vehicle options contact_info comments payment_details')
         .exec()
         .then(reservations => {
             const response = {
@@ -48,6 +48,7 @@ exports.bookins_get_all = (req, res, next) => {
                             payment_type: reservation.payment_details.payment_type,
                             payment_method: reservation.payment_details.payment_method,
                             discount_code: reservation.payment_details.discount_code,
+                            deposit_amount: reservation.payment_details.deposit_amount,
                             total_price: reservation.payment_details.total_price,
                             in_car_payment: reservation.payment_details.in_car_payment
                         },
@@ -98,7 +99,16 @@ exports.bookings_get_booking = (req, res, next) => {
 
 //Create a new booking
 exports.bookings_create_booking = (req, res, next) => {
-    console.log(req.body.vehicle.selected_vehicle);
+
+    const deposit_amount = function(price) {
+        return req.body.payment_details.payment_type === "Deposit" ? Number((price * 25) / 100) : 0;
+    }
+
+    const in_car_payment = function (price) {
+        const deposit = deposit_amount(price);
+        return deposit > 0 ? Number(price - deposit) : 0;
+    }
+
     const booking = new Booking({
         _id: new mongoose
             .Types
@@ -139,19 +149,20 @@ exports.bookings_create_booking = (req, res, next) => {
             payment_type: req.body.payment_details.payment_type,
             payment_method: req.body.payment_details.payment_method,
             discount_code: req.body.payment_details.discount_code,
+            deposit_amount: deposit_amount(req.body.vehicle.price),
             total_price: req.body.payment_details.total_price,
-            in_car_payment: req.body.payment_details.in_car_payment
+            in_car_payment: in_car_payment(req.body.vehicle.price)
         }
     });
     booking
         .save()
-        .then(result => {
-            //console.log(result);
+        .then(result => {          
+            console.log(result);
             res
                 .status(201)
                 .json({
                     message: 'Created booking successfully.',
-                    createdbooking: {
+                    booking: {
                         _id: result._id,
                         trip_details: {
                             pickup_location: result.trip_details.pickup_location,
@@ -189,6 +200,7 @@ exports.bookings_create_booking = (req, res, next) => {
                             payment_type: result.payment_details.payment_type,
                             payment_method: result.payment_details.payment_method,
                             discount_code: result.payment_details.discount_code,
+                            deposit_amount: result.payment_details.deposit_amount,
                             total_price: result.payment_details.total_price,
                             in_car_payment: result.payment_details.in_car_payment
                         },

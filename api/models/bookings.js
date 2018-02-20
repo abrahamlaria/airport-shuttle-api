@@ -43,6 +43,7 @@ const bookingSchema = mongoose.Schema({
         payment_type: {type: String, required: true},
         payment_method: {type: String, required: true},
         discount_code: {type: String},
+        deposit_amount: {type: Number, required: true},
         total_price: {type: Number, required: true},
         in_car_payment: {type: Number, required: true}
     }
