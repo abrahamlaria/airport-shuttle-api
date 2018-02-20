@@ -11,9 +11,11 @@ const bookingSchema = mongoose.Schema({
         passengers_count: {type: Number, required: true},
         suitcases_count: {type: Number, required: true},
         roundtrip: {type: Boolean},
-        rt_pickup_date: {type: String},
-        rt_pickup_time: {type: String},       
-        rt_flight_number: {type: String}
+        rt_pickup_location: {type: String, required: true},
+        rt_dropoff_location: {type: String, required: true},
+        rt_pickup_date: {type: String, required: true},
+        rt_pickup_time: {type: String, required: true},       
+        rt_flight_number: {type: String, required: true}
     },
     vehicle: {
         selected_vehicle: {type: String, required: true},
@@ -45,7 +47,8 @@ const bookingSchema = mongoose.Schema({
         deposit_amount: {type: Number, required: true},
         total_price: {type: Number, required: true},
         in_car_payment: {type: Number, required: true}
-    }
+    },
+    booking_date: {type: Date, required: true}
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

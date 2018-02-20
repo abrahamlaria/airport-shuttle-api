@@ -21,6 +21,8 @@ exports.bookins_get_all = (req, res, next) => {
                             passengers_count: reservation.trip_details.passengers_count,
                             suitcases_count: reservation.trip_details.suitcases_count,
                             roundtrip: reservation.trip_details.roundtrip,
+                            rt_pickup_location: reservation.trip_details.rt_pickup_location,
+                            rt_pickup_location: reservation.trip_details.rt_dropoff_location,
                             rt_pickup_date: reservation.trip_details.rt_pickup_date,
                             rt_pickup_time: reservation.trip_details.rt_pickup_time,
                             rt_flight_number: reservation.trip_details.rt_flight_number
@@ -52,6 +54,7 @@ exports.bookins_get_all = (req, res, next) => {
                             total_price: reservation.payment_details.total_price,
                             in_car_payment: reservation.payment_details.in_car_payment
                         },
+                        booking_date: reservation.booking_date,
                         //-------
                         request: {
                             type: 'GET',
@@ -109,6 +112,12 @@ exports.bookings_create_booking = (req, res, next) => {
         return deposit > 0 ? Number(price - deposit) : 0;
     }
 
+    //If it is roundtrip then the return pickup location = arrival dropoff location
+    const rt_pickup_location = roundtrip => roundtrip ? req.body.trip_details.dropoff_location : "";
+    
+    //If it is roundtrip then the return dropoff location = arrival pickup location
+    const rt_dropoff_location = roundtrip => roundtrip ? req.body.trip_details.pickup_location : "";
+
     const booking = new Booking({
         _id: new mongoose
             .Types
@@ -122,6 +131,8 @@ exports.bookings_create_booking = (req, res, next) => {
             passengers_count: req.body.trip_details.passengers_count,
             suitcases_count: req.body.trip_details.suitcases_count,
             roundtrip: req.body.trip_details.roundtrip,
+            rt_pickup_location: rt_pickup_location(req.body.trip_details.roundtrip),
+            rt_dropoff_location: rt_dropoff_location(req.body.trip_details.roundtrip),
             rt_pickup_date: req.body.trip_details.rt_pickup_date,
             rt_pickup_time: req.body.trip_details.rt_pickup_time,
             rt_flight_number: req.body.trip_details.rt_flight_number
@@ -152,7 +163,8 @@ exports.bookings_create_booking = (req, res, next) => {
             deposit_amount: deposit_amount(req.body.vehicle.price),
             total_price: req.body.payment_details.total_price,
             in_car_payment: in_car_payment(req.body.vehicle.price)
-        }
+        },
+        booking_date: new Date().toISOString()
     });
     booking
         .save()
@@ -173,6 +185,8 @@ exports.bookings_create_booking = (req, res, next) => {
                             passengers_count: result.trip_details.passengers_count,
                             suitcases_count: result.trip_details.suitcases_count,
                             roundtrip: result.trip_details.roundtrip,
+                            rt_pickup_location: result.trip_details.rt_pickup_location,
+                            rt_dropoff_location: result.trip_details.rt_dropoff_location,
                             rt_pickup_date: result.trip_details.rt_pickup_date,
                             rt_pickup_time: result.trip_details.rt_pickup_time,
                             rt_flight_number: result.trip_details.rt_flight_number
@@ -204,6 +218,7 @@ exports.bookings_create_booking = (req, res, next) => {
                             total_price: result.payment_details.total_price,
                             in_car_payment: result.payment_details.in_car_payment
                         },
+                        booking_date: result.booking_date,
                         //---------
                         request: {
                             type: 'GET',
