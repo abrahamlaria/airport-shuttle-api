@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 //Get all products
 exports.bookins_get_all = (req, res, next) => {
     Booking.find()
-        /*.select('name price _id productImage')*/
+        .select('_id trip_details vehicle options contact_info  comments payment_details')
         .exec()
         .then(reservations => {
             const response = {
@@ -54,7 +54,7 @@ exports.bookins_get_all = (req, res, next) => {
                         //-------
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/products/' + reservation._id
+                            url: 'http://localhost:3000/bookings/' + reservation._id
                         }
                     }
                 })
@@ -66,6 +66,33 @@ exports.bookins_get_all = (req, res, next) => {
             res.status(500).json({
                 error: err
             });
+        });
+}
+
+//Get a single order by ID
+exports.bookings_get_booking = (req, res, next) => {
+    const id = req.params.bookingId;
+    Booking.findById(id)
+        .select('_id trip_details vehicle options contact_info  comments payment_details')
+        .exec()
+        .then(reservation => {           
+            if (reservation) {
+                res.status(200).json({
+                    booking: reservation,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/bookings/'
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: 'No valid entry found for provided ID.'
+                });
+            }           
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
         });
 }
 
@@ -178,5 +205,34 @@ exports.bookings_create_booking = (req, res, next) => {
             res
                 .status(500)
                 .json({error: err});
+        });
+}
+
+//Delete a product by ID
+exports.bookings_delete_booking = (req, res, next) => {
+    const id = req.params.bookingId;
+    Booking.findByIdAndRemove({
+        _id: id
+    })
+        .exec()
+        .then( result => {
+            console.log(result);
+            res.status(200).json({
+                message: 'Product deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/products/',
+                    body: {
+                        name: 'String',
+                        price: 'Number'
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
         });
 }
