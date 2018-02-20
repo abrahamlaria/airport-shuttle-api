@@ -100,11 +100,11 @@ exports.bookings_get_booking = (req, res, next) => {
 //Create a new booking
 exports.bookings_create_booking = (req, res, next) => {
 
-    const deposit_amount = function(price) {
-        return req.body.payment_details.payment_type === "Deposit" ? Number((price * 25) / 100) : 0;
-    }
-
-    const in_car_payment = function (price) {
+    //If the type of selected payment is Deposit calculate the 25% of the total price
+    const deposit_amount = price => req.body.payment_details.payment_type === "Deposit" ? Number((price * 25) / 100) : 0;
+    
+    //Rest the price minus the deposit and the remaining amount should be paid in the vehicle.
+    const in_car_payment = price => {
         const deposit = deposit_amount(price);
         return deposit > 0 ? Number(price - deposit) : 0;
     }
