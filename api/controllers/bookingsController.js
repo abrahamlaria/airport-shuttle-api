@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 //Get all products
 exports.bookins_get_all = (req, res, next) => {
     Booking.find()
-        .select('_id trip_details vehicle options contact_info comments payment_details')
+        .select('_id trip_details vehicle options contact_info comments payment_details booking_date update_date booking_status')
         .exec()
         .then(reservations => {
             const response = {
@@ -56,6 +56,12 @@ exports.bookins_get_all = (req, res, next) => {
                         },
                         booking_date: reservation.booking_date,
                         update_date: reservation.update_date,
+                        booking_status: {
+                            received: reservation.booking_status.received,
+                            scheduled: reservation.booking_status.scheduled,
+                            assigned: reservation.booking_status.assigned,
+                            completed: reservation.booking_status.completed
+                        },
                         //-------
                         request: {
                             type: 'GET',
@@ -78,7 +84,7 @@ exports.bookins_get_all = (req, res, next) => {
 exports.bookings_get_booking = (req, res, next) => {
     const id = req.params.bookingId;
     Booking.findById(id)
-        .select('_id trip_details vehicle options contact_info  comments payment_details')
+        .select('_id trip_details vehicle options contact_info  comments payment_details booking_date update_date booking_status')
         .exec()
         .then(reservation => {           
             if (reservation) {
@@ -166,7 +172,13 @@ exports.bookings_create_booking = (req, res, next) => {
             in_car_payment: in_car_payment(req.body.vehicle.price)
         },
         booking_date: new Date().toISOString(),
-        update_date: new Date().toISOString()
+        update_date: new Date().toISOString(),
+        booking_status: {
+            received: true,
+            scheduled: false,
+            assigned: false,
+            completed: false
+        }
     });
     booking
         .save()
@@ -222,6 +234,12 @@ exports.bookings_create_booking = (req, res, next) => {
                         },
                         booking_date: result.booking_date,
                         update_date: result.update_date,
+                        booking_status: {
+                            received: result.booking_status.received,
+                            scheduled: result.booking_status.scheduled,
+                            assigned: result.booking_status.assigned,
+                            completed: result.booking_status.completed
+                        },
                         //---------
                         request: {
                             type: 'GET',
@@ -277,7 +295,12 @@ exports.bookings_update_booking = (req, res, next) => {
         //Update comments
         updateOps[ops.propComments] = ops.commentsValue;
         //Update date
-        updateOps[ops.propUpdate_Date] = new Date().toISOString();    
+        updateOps[ops.propUpdate_Date] = new Date().toISOString();
+        //Update booking status
+        updateOps[ops.propReceived] = ops.receivedValue;
+        updateOps[ops.propScheduled] = ops.scheduledValue;
+        updateOps[ops.propAssigned] = ops.assignedValue;
+        updateOps[ops.propCompleted] = ops.completed;  
     }
 
      //updateOps is an object that will have the updated value/values for name and price.
