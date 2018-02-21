@@ -62,7 +62,6 @@ exports.bookins_get_all = (req, res, next) => {
                             assigned: reservation.booking_status.assigned,
                             completed: reservation.booking_status.completed
                         },
-                        //-------
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/bookings/' + reservation._id
@@ -240,7 +239,6 @@ exports.bookings_create_booking = (req, res, next) => {
                             assigned: result.booking_status.assigned,
                             completed: result.booking_status.completed
                         },
-                        //---------
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/bookings/' + result._id
