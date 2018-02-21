@@ -37,7 +37,7 @@ const bookingSchema = mongoose.Schema({
         phone_number: {type: String, required: true},
         country: {type: String, required: true}      
     },   
-    comments: {type: String},
+    comments: {type: String, required: true},
     send_communications: {type: Boolean, required: true},
     agree_to_terms: {type: Boolean, required: true},
     payment_details: {

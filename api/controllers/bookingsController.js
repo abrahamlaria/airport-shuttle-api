@@ -235,6 +235,67 @@ exports.bookings_create_booking = (req, res, next) => {
         });
 }
 
+//Update a product
+exports.bookings_update_booking = (req, res, next) => {
+    const id = req.params.bookingId;
+    const updateOps = {};
+    //console.log(req.body);
+    for (const ops of req.body) {
+        console.log(ops);
+        //Update trip details
+        updateOps[ops.propPickup_Location] = ops.pickup_locationValue;
+        updateOps[ops.propDropoff_Location] = ops.dropoff_locationValue;
+        updateOps[ops.propPickup_Date] = ops.pickup_dateValue;
+        updateOps[ops.propDropoff_Date] = ops.dropoff_dateValue;
+        updateOps[ops.propPickup_Time] = ops.pickup_timeValue;
+        updateOps[ops.propFlight_Number] = ops.flight_numberValue;
+        updateOps[ops.propPassengers_Count] = ops.passengers_countValue;
+        updateOps[ops.propSuitcases_Count] = ops.suitcases_count;
+        updateOps[ops.propRoundtrip] = ops.roundtrip;     
+        updateOps[ops.propRt_Pickup_Location] = ops.rt_pickup_locationValue;
+        updateOps[ops.propRt_Dropoff_Location] = ops.rt_dropoff_locationValue;
+        updateOps[ops.propRt_Pickup_Date] = ops.rt_pickup_dateValue;
+        updateOps[ops.propRt_Dropoff_Date] = ops.rt_dropoff_dateValue;
+        updateOps[ops.propRt_Pickup_Time] = ops.rt_pickup_timeValue;
+        updateOps[ops.propRt_Flight_Number] = ops.rt_flight_numberValue;
+        //Update vehicle details
+        updateOps[ops.propSelected_Vehicle] = ops.selected_vehicle;
+        updateOps[ops.propPrice] = ops.price;
+        //Update options
+        updateOps[ops.propBaby_Seats] = ops.baby_seatsValue;
+        updateOps[ops.propBooster_Seats] = ops.booster_seatsValue;
+        updateOps[ops.propSpecial_Luggage] = ops.special_luggageValue;
+        updateOps[ops.propPets] = ops.pets;
+        //Update contact info
+        updateOps[ops.propName] = ops.nameValue;
+        updateOps[ops.propEmail] = ops.emailValue;
+        updateOps[ops.propPhone_Number] = ops.phone_numberValue;
+        updateOps[ops.propCountry] = ops.country;
+        //Update comments
+        updateOps[ops.propComments] = ops.commentsValue;     
+    }
+
+     //updateOps is an object that will have the updated value/values for name and price.
+    Booking.update({_id: id}, {$set: updateOps})
+        .exec()
+        .then( result => {
+            console.log(result);
+            res.status(200).json({
+                message: 'Booking updated',
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/bookings/' + id
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });       
+}
+
 //Delete a product by ID
 exports.bookings_delete_booking = (req, res, next) => {
     const id = req.params.bookingId;

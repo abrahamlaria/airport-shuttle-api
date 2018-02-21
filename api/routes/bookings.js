@@ -13,7 +13,10 @@ router.post('/', BookingsController.bookings_create_booking);
 //Get a single product by ID
 router.get('/:bookingId', BookingsController.bookings_get_booking);
 
-//Delete a product by ID
+//Delete a booking by ID
 router.delete('/:bookingId', BookingsController.bookings_delete_booking);
+
+//Update a booking by ID
+router.patch('/:bookingId', BookingsController.bookings_update_booking);
 
 module.exports = router;
