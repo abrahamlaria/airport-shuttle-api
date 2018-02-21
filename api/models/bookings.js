@@ -48,7 +48,8 @@ const bookingSchema = mongoose.Schema({
         total_price: {type: Number, required: true},
         in_car_payment: {type: Number, required: true}
     },
-    booking_date: {type: Date, required: true}
+    booking_date: {type: Date, required: true},
+    update_date: {type: Date, required: true}
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

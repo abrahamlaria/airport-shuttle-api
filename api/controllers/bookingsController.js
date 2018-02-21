@@ -55,6 +55,7 @@ exports.bookins_get_all = (req, res, next) => {
                             in_car_payment: reservation.payment_details.in_car_payment
                         },
                         booking_date: reservation.booking_date,
+                        update_date: reservation.update_date,
                         //-------
                         request: {
                             type: 'GET',
@@ -164,7 +165,8 @@ exports.bookings_create_booking = (req, res, next) => {
             total_price: req.body.payment_details.total_price,
             in_car_payment: in_car_payment(req.body.vehicle.price)
         },
-        booking_date: new Date().toISOString()
+        booking_date: new Date().toISOString(),
+        update_date: new Date().toISOString()
     });
     booking
         .save()
@@ -219,6 +221,7 @@ exports.bookings_create_booking = (req, res, next) => {
                             in_car_payment: result.payment_details.in_car_payment
                         },
                         booking_date: result.booking_date,
+                        update_date: result.update_date,
                         //---------
                         request: {
                             type: 'GET',
@@ -272,7 +275,9 @@ exports.bookings_update_booking = (req, res, next) => {
         updateOps[ops.propPhone_Number] = ops.phone_numberValue;
         updateOps[ops.propCountry] = ops.country;
         //Update comments
-        updateOps[ops.propComments] = ops.commentsValue;     
+        updateOps[ops.propComments] = ops.commentsValue;
+        //Update date
+        updateOps[ops.propUpdate_Date] = new Date().toISOString();    
     }
 
      //updateOps is an object that will have the updated value/values for name and price.
