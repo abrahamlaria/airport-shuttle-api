@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//Create a new user schema
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     email: {
