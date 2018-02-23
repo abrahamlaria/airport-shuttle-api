@@ -9,3 +9,13 @@ Use it only for educational and test purposes and never on production until it i
 ### Example
 
 Details on how to use this API will be added upon completion.
+
+## Main Stack
+
+```
+Node.js
+Express.js
+Mongodb (Mlab)
+JWT
+```
+For a complete list of packages being used so far check the package.json file
