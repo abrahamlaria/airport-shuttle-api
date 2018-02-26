@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const UserController = require('../controllers/user');
+const UserController = require('../controllers/userController');
 
 //Create a new user
 router.post('/signup', UserController.user_signup_user);
+
+//Create a new driver
+router.post('/driver-signup', UserController.user_signup_user);
 
 //Login users
 router.post('/login', UserController.user_login_user);
