@@ -55,7 +55,8 @@ const bookingSchema = mongoose.Schema({
         scheduled: {type: Boolean, required: true},
         assigned: {type: Boolean, required: true},
         completed: {type: Boolean, required: true}
-    }
+    },
+    assigned_to: {type: Object, required: true}
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);
