@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 //Get all products
 exports.bookins_get_all = (req, res, next) => {
     Booking.find()
-        .select('_id trip_details vehicle options contact_info comments payment_details booking_date update_date booking_status')
+        .select('_id trip_details vehicle options contact_info comments payment_details booking_date update_date booking_status assigned_to')
         .exec()
         .then(reservations => {
             const response = {
                 count: reservations.length,
                 bookings: reservations.map(reservation => {
-                    return {                       
+                    return {                                             
                         _id: reservation._id,
                         trip_details: {
                             pickup_location: reservation.trip_details.pickup_location,
@@ -62,6 +62,7 @@ exports.bookins_get_all = (req, res, next) => {
                             assigned: reservation.booking_status.assigned,
                             completed: reservation.booking_status.completed
                         },
+                        assigned_to: reservation.assigned_to,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/bookings/' + reservation._id
@@ -83,7 +84,7 @@ exports.bookins_get_all = (req, res, next) => {
 exports.bookings_get_booking = (req, res, next) => {
     const id = req.params.bookingId;
     Booking.findById(id)
-        .select('_id trip_details vehicle options contact_info  comments payment_details booking_date update_date booking_status')
+        .select('_id trip_details vehicle options contact_info comments payment_details booking_date update_date booking_status assigned_to')
         .exec()
         .then(reservation => {           
             if (reservation) {
@@ -177,6 +178,15 @@ exports.bookings_create_booking = (req, res, next) => {
             scheduled: false,
             assigned: false,
             completed: false
+        },
+        assigned_to: {
+            name: "",
+            lastname: "",
+            phone_number: "",
+            vehicle_type: "",
+            vehicle_maker: "",
+            vehicle_model: "",
+            plate: ""
         }
     });
     booking
@@ -239,6 +249,7 @@ exports.bookings_create_booking = (req, res, next) => {
                             assigned: result.booking_status.assigned,
                             completed: result.booking_status.completed
                         },
+                        assigned_to: result.assigned_to,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/bookings/' + result._id
@@ -258,9 +269,9 @@ exports.bookings_create_booking = (req, res, next) => {
 exports.bookings_update_booking = (req, res, next) => {
     const id = req.params.bookingId;
     const updateOps = {};
-    //console.log(req.body);
+
     for (const ops of req.body) {
-        console.log(ops);
+        console.log(JSON.stringify(ops));
         //Update trip details
         updateOps[ops.propPickup_Location] = ops.pickup_locationValue;
         updateOps[ops.propDropoff_Location] = ops.dropoff_locationValue;
@@ -298,9 +309,10 @@ exports.bookings_update_booking = (req, res, next) => {
         updateOps[ops.propReceived] = ops.receivedValue;
         updateOps[ops.propScheduled] = ops.scheduledValue;
         updateOps[ops.propAssigned] = ops.assignedValue;
-        updateOps[ops.propCompleted] = ops.completed;  
-    }
-
+        updateOps[ops.propCompleted] = ops.completedValue;  
+        //Update assigned to
+        updateOps[ops.propAssignedTo] =  ops.assignedToValue;
+    }  
      //updateOps is an object that will have the updated value/values for name and price.
     Booking.update({_id: id}, {$set: updateOps})
         .exec()

@@ -18,7 +18,6 @@ const accessLevels = {
 
 //Create a new user (Signup)
 exports.user_signup_user = (req, res, next) => {
-//console.log(req);
     //Avoid duplicate emails
     User
         .find({email: req.body.email})
@@ -37,7 +36,7 @@ exports.user_signup_user = (req, res, next) => {
                             .status(500)
                             .json({error: err});
                     } else {
-                                              
+
                         //Assing roles
                         let role = accessLevels.user;
                         if(req.path === "/driver-signup")
