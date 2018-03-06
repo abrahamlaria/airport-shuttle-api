@@ -484,7 +484,7 @@ function AdminText(output) {
 function ClientText(output, name) {
     let message = `
     <p>Dear: ${name}</p>   
-    <p>We have received your booking request. A representative wil be in touch with you shortly.</p><br>` + output + `
+    <p>We have received your booking request. A representative will be in touch with you shortly.</p><br>` + output + `
     `;
     SendMail(message);
 }
