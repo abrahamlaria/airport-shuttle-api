@@ -480,8 +480,8 @@ function SendMail(output) {
         service: 'gmail',
         secure: false, // true for 465, false for other ports
         auth: {
-            user: 'admin@comfortransfer.com', // Should be an environment variable
-            pass: 'Remember-2507' // Should be an environment variable
+            user: process.env.SITE_EMAIL, // Should be an environment variable
+            pass: process.env.SITE_PW // Should be an environment variable
         },
         tls: { //Remove before going live
             rejectUnauthorized: false

@@ -17,5 +17,6 @@ Node.js
 Express.js
 Mongodb (Mlab)
 JWT
+Nodemailer
 ```
 For a complete list of packages being used so far check the package.json file
