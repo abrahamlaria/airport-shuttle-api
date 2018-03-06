@@ -276,8 +276,8 @@ exports.bookings_create_booking = (req, res, next) => {
                         }
                     }
                 });
-            //Send email confirmation to the admin
-            BookingConfirmation(result);
+            //Booking details
+            BookingDetails(result);
         })
         .catch(err => {
             console.log(err);
@@ -391,8 +391,8 @@ exports.bookings_delete_booking = (req, res, next) => {
         });
 }
 
-//Send booking confirmation to the admin
-function BookingConfirmation(result) {
+//Booking details
+function BookingDetails(result) {
     let roundtrip = "";
     if (result.trip_details.roundtrip) {
         roundtrip = `
@@ -435,7 +435,6 @@ function BookingConfirmation(result) {
     }
 
     const output = `
-        <p>You have a new booking from the website</p>
         <h3>Contact Details</h3>
         <ul>
             <li>Name: ${result.contact_info.name}</li>
@@ -469,11 +468,28 @@ function BookingConfirmation(result) {
         ` + payment + `
 
     `;
+
     //Send email
-    SendMail(output);
+    AdminText(output);
+    ClientText(output, result.contact_info.name);
 };
 
-function SendMail(output) {
+function AdminText(output) {
+    let message = `
+    <p>You have a new booking from the website</p><br>` + output + `
+    `;
+    SendMail(message);
+}
+
+function ClientText(output, name) {
+    let message = `
+    <p>Dear: ${name}</p>   
+    <p>We have received your booking request. A representative wil be in touch with you shortly.</p><br>` + output + `
+    `;
+    SendMail(message);
+}
+
+function SendMail(message) {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         //host: 'smtp.google.com', port: 587,
@@ -490,11 +506,11 @@ function SendMail(output) {
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: '"Web Submission" <admin@comfortransfer.com>', // sender address
-        to: 'admin@comfortransfer.com, a_laria@yahoo.com', // list of receivers
+        from: '"Web Submission" <' + process.env.SITE_EMAIL + '>', // sender address
+        to: process.env.SITE_EMAIL + ', a_laria@yahoo.com', // list of receivers
         subject: 'New booking ✔', // Subject line
         text: '', // plain text body
-        html: output // html body
+        html: message // html body
     };
 
     // send mail with defined transport object
