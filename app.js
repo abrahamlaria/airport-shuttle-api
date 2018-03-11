@@ -9,6 +9,8 @@ require('dotenv').config();
 const bookingRoutes = require('./api/routes/bookings');
 const userRoutes = require('./api/routes/user');
 
+require('dotenv').config();
+
 mongoose.connect('mongodb://ComforTrans:' + process.env.MONGO_MLAB_PW + '@ds241578.mlab.com:41578/comfortransfer-db');
 mongoose.Promise = global.Promise;
 
@@ -59,7 +61,7 @@ app.use((error, req, res, next) => {
     res.status(error.status || 500);
     res.json({
         error: {           
-            message: error.message + "It worked"
+            message: error.message
         }
     });
 });
