@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "pm2 start server.js -i max — name=\"confortransfer\"",
-    "restart:prod": "pm2 restart all --update-env",
+    "restart": "pm2 restart all --update-env",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
