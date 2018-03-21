@@ -3,6 +3,7 @@ A Node.js API for an Airport Shuttle Service company.
 
 ## Work in progress
 
+Update: Still under development but now it has been deployed to AWS using Codeship as CI/CD.
 Altough this will be a real, production ready API, it is still under active develoment. The code here is far from being completed.
 Use it only for educational and test purposes and never on production until it is finished. 
 
